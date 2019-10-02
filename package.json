@@ -4,10 +4,10 @@
 	"description": "Back end for a simple user directory API with recommendation engine",
 	"main": "index.js",
 	"scripts": {
-		"build": "rimraf dist && babel src -d dist",
-		"serve": "yarn run build && node dist/index.js",
+		"build": "rimraf dist && babel src -d dist --source-maps",
+		"serve": "yarn run build && dotenv node dist/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"test:e2e": "cucumber-js spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps",
+		"test:e2e": "dotenv cucumber-js -- spec/cucumber/features --require-module @babel/register --require spec/cucumber/steps",
 		"watch": "nodemon -w src --exec yarn run serve",
 		"fix": "eslint src --fix",
 		"lint": "eslint src"
@@ -24,18 +24,24 @@
 	"homepage": "https://github.com/d4nyll/hobnob#readme",
 	"devDependencies": {
 		"@babel/core": "^7.6.2",
+		"@babel/node": "^7.6.2",
+		"@babel/preset-env": "^7.6.2",
 		"@babel/register": "^7.6.2",
 		"babel-cli": "^6.26.0",
+		"babel-core": "^7.0.0-0",
 		"babel-preset-env": "^1.6.1",
 		"cucumber": "^5.1.0",
+		"dotenv-cli": "^2.0.1",
 		"eslint": "^6.5.1",
 		"eslint-config-airbnb": "^18.0.1",
 		"eslint-plugin-import": "^2.18.2",
 		"eslint-plugin-jsx-a11y": "^6.2.3",
 		"eslint-plugin-react": "^7.15.0",
 		"eslint-plugin-react-hooks": "^1.7.0",
+		"husky": "^3.0.8",
 		"nodemon": "^1.19.3",
-		"rimraf": "^2.6.2"
+		"rimraf": "^2.6.2",
+		"superagent": "^5.1.0"
 	},
 	"dependencies": {
 		"@babel/polyfill": "^7.6.0",
