@@ -22,6 +22,7 @@
 	},
 	"homepage": "https://github.com/d4nyll/hobnob#readme",
 	"devDependencies": {
+		"@babel/node": "^7.6.2",
 		"babel-cli": "^6.26.0",
 		"babel-preset-env": "^1.6.1",
 		"eslint": "^6.5.1",
