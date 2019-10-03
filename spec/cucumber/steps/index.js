@@ -87,6 +87,24 @@ When(
   },
 );
 
+When(
+  /^attaches an? (.+) payload where the ([a-zA-Z0-9, ]+) fields? (?:is|are) exactly (.+)$/,
+  function (payloadType, fields, value) {
+    const payload = {
+      email: 'e@ma.il',
+      password: 'password',
+    };
+    const fieldsToModify = fields
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s !== '');
+    fieldsToModify.forEach((field) => {
+      payload[field] = value;
+    });
+    this.request.send(JSON.stringify(payload)).set('Content-Type', 'application/json');
+  },
+);
+
 Then(/^our API should respond with a ([1-5]\d{2}) HTTP status code$/, function (statusCode) {
   assert.equal(this.response.statusCode, statusCode);
 });
