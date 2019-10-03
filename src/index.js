@@ -55,7 +55,6 @@ app.use((err, req, res, next) => {
     res.status(400);
     res.set('Content-Type', 'application/json');
     res.json({ message: 'Payload should be in JSON format' });
-    return;
   }
   next();
 });
@@ -68,6 +67,12 @@ app.post('/users', (req, res, next) => {
     res.status(400);
     res.set('Content-Type', 'application/json');
     res.json({ message: 'Payload must contain at least the email and password fields' });
+  }
+  if (typeof req.body.email !== 'string' || typeof req.body.password !== 'string') {
+    res.status(400);
+    res.set('Content-Type', 'application/json');
+    res.json({ message: 'The email and password fields must be of type string' });
+    return;
   }
   next();
 });
