@@ -1,6 +1,11 @@
 import '@babel/polyfill';
 import express from 'express';
 import bodyParser from 'body-parser';
+import elasticsearch from 'elasticsearch';
+
+const client = new elasticsearch.Client({
+  host: `${process.env.ELASTICSEARCH_PROTOCOL}://${process.env.ELASTICSEARCH_HOSTNAME}:${process.env.ELASTICSEARCH_PORT}`
+});
 
 const app = express();
 app.use(bodyParser.json({ limit: 1e6 }));
@@ -10,7 +15,7 @@ function checkEmptyPayload(req, res, next) {
     res.status(400);
     res.set('Content-Type', 'application/json');
     res.json({
-      message: 'Payload should not be empty',
+      message: 'Payload should not be empty'
     });
   }
   next();
@@ -25,7 +30,7 @@ function checkContentTypeIsSet(req, res, next) {
     res.status(400);
     res.set('Content-Type', 'application/json');
     res.json({
-      message: 'The "Content-Type" header must be set for requests with a non-empty payload',
+      message: 'The "Content-Type" header must be set for requests with a non-empty payload'
     });
   }
   next();
@@ -59,7 +64,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.post('/users', (req, res, next) => {
+app.post('/users', (req, res) => {
   if (
     !Object.prototype.hasOwnProperty.call(req.body, 'email')
     || !Object.prototype.hasOwnProperty.call(req.body, 'password')
@@ -80,7 +85,22 @@ app.post('/users', (req, res, next) => {
     res.json({ message: 'The email field must be a valid email.' });
     return;
   }
-  next();
+  client
+    .index({
+      index: 'hobnob',
+      type: 'user',
+      body: req.body
+    })
+    .then((result) => {
+      res.status(201);
+      res.set('Content-Type', 'text/plain');
+      res.send(result._id);
+    })
+    .catch(() => {
+      res.status(500);
+      res.set('Content-Type', 'application/json');
+      res.json({ message: 'Internal Server Error' });
+    });
 });
 
 app.listen(process.env.SERVER_PORT, () => {
