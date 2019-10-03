@@ -41,13 +41,17 @@ When(/^sends the request$/, function (callback) {
     });
 });
 
+When(/^without a (?:"|')([\w-]+)(?:"|') header set$/, function (headerName) {
+  this.request.unset(headerName);
+});
+
 Then(/^our API should respond with a ([1-5]\d{2}) HTTP status code$/, function (statusCode) {
   assert.equal(this.response.statusCode, statusCode);
 });
 
 Then(/^the payload of the response should be a JSON object$/, function () {
   // Check Content-Type header
-  const contentType =		this.response.headers['Content-Type'] || this.response.headers['content-type'];
+  const contentType = this.response.headers['Content-Type'] || this.response.headers['content-type'];
   if (!contentType || !contentType.includes('application/json')) {
     throw new Error('Response not of Content-Type application/json');
   }
