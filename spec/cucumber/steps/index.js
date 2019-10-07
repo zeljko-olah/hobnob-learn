@@ -102,6 +102,13 @@ When(/^attaches a valid (.+) payload$/, function (payloadType) {
   this.request.send(JSON.stringify(this.requestPayload)).set('Content-Type', 'application/json');
 });
 
+When(/^attaches (.+) as the payload$/, function (payload) {
+  this.requestPayload = JSON.parse(payload);
+  this.request
+    .send(payload)
+    .set('Content-Type', 'application/json');
+});
+
 Then(/^our API should respond with a ([1-5]\d{2}) HTTP status code$/, function (statusCode) {
   assert.equal(this.response.statusCode, statusCode);
 });
@@ -144,7 +151,7 @@ Then(
     this.type = type;
     client
       .get({
-        index: 'hobnob',
+        index: process.env.ELASTICSEARCH_INDEX,
         type,
         id: this.responsePayload
       })
@@ -159,7 +166,7 @@ Then(
 Then('the newly-created user should be deleted', function (callback) {
   client
     .delete({
-      index: 'hobnob',
+      index: process.env.ELASTICSEARCH_INDEX,
       type: this.type,
       id: this.responsePayload
     })
